@@ -35,7 +35,7 @@ function FunctionBuilder()
 	// The number of parameters for functions
 	this.ParameterCount  = 0,
 	// Number of if statements/loops + 1
-	this.SimpleCyclomaticComplexity = 0;
+	this.SimpleCyclomaticComplexity = 1;
 	// The max depth of scopes (nested ifs, loops, etc)
 	this.MaxNestingDepth    = 0;
 	// The max number of conditions if one decision statement.
@@ -115,12 +115,31 @@ function complexity(filePath)
 	// Tranverse program with a function visitor.
 	traverseWithParents(ast, function (node) 
 	{
+		if (node.type === 'Literal')
+			fileBuilder.Strings++;
+
 		if (node.type === 'FunctionDeclaration') 
 		{
 			var builder = new FunctionBuilder();
 
 			builder.FunctionName = functionName(node);
 			builder.StartLine    = node.loc.start.line;
+			builder.ParameterCount = node.params.length;
+
+			traverseWithParents(node, function(child){
+				if (isDecision(child))
+					builder.SimpleCyclomaticComplexity++;
+				if (child.type === "IfStatement"){
+					var localMax = 0;
+					traverseWithParents(child, function (grandchild){
+						if (grandchild["operator"] === "&&" || grandchild["operator"] === "||")
+							localMax++;
+						else if (grandchild.type === "IfStatement")
+							localMax = 0;
+						builder.MaxConditions = max(builder.MaxConditions, localMax + 1);
+					})
+				}
+			});
 
 			builders[builder.FunctionName] = builder;
 		}
@@ -128,6 +147,7 @@ function complexity(filePath)
 	});
 
 }
+
 
 // Helper function for counting children of node.
 function childrenLength(node)
@@ -148,6 +168,22 @@ function childrenLength(node)
 	return count;
 }
 
+// Helper function for counting how many binary expressions in a node.
+function countBinary(node){
+	num = 0;
+	for (key in node){
+		if (key === 'BinaryExpression')
+			num++;
+	}
+	return num;
+}
+
+// Helper max function.
+function max(a, b){
+	if (a > b)
+		return a;
+	else return b;
+}
 
 // Helper function for checking if a node is a "decision type node"
 function isDecision(node)
