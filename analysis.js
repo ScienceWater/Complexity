@@ -196,7 +196,7 @@ function Crazy (argument) {
   if (secs < 59) {
     return secs.toString().split('.')[0] + ' seconds'
   } else if (secs > 59 && secs < 3600) {
-    let mints = secs / 60
+    const mints = secs / 60
     const remainder = parseInt(secs.toString().split('.')[0]) -
 (parseInt(mints.toString().split('.')[0]) * 60)
     let szmin
@@ -208,7 +208,7 @@ function Crazy (argument) {
     return mints.toString().split('.')[0] + ' ' + szmin + ' ' +
 remainder.toString() + ' seconds'
   } else {
-    let mints = secs / 60
+    const mints = secs / 60
     const hours = mints / 60
     const remainders = parseInt(secs.toString().split('.')[0]) -
 (parseInt(mints.toString().split('.')[0]) * 60)
