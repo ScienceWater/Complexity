@@ -187,9 +187,9 @@ if (!String.prototype.format) {
 main()
 
 function Crazy (argument) {
-  const date_bits = element.value.match(/^(\d{4})\-(\d{1,2})\-(\d{1,2})$/)
-  let new_date = null
-  if (date_bits && date_bits.length === 4 && parseInt(date_bits[2]) > 0 && parseInt(date_bits[3]) > 0) { new_date = new Date(parseInt(date_bits[1]), parseInt(date_bits[2]) - 1, parseInt(date_bits[3])) }
+  const dateBits = element.value.match(/^(\d{4})\-(\d{1,2})\-(\d{1,2})$/)
+  let newDate = null
+  if (dateBits && dateBits.length === 4 && parseInt(dateBits[2]) > 0 && parseInt(dateBits[3]) > 0) { newDate = new Date(parseInt(dateBits[1]), parseInt(dateBits[2]) - 1, parseInt(dateBits[3])) }
 
   const secs = bytes / 3500
 
